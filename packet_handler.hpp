@@ -1,8 +1,7 @@
 #ifndef PACKET_HANDLER_HPP
 #define PACKET_HANDLER_HPP
 
-#include "../client_networking/network.hpp"
-#include "../packet_types.hpp"
+#include "sbpt_generated_includes.hpp"
 
 #include <unordered_map>
 #include <functional>
