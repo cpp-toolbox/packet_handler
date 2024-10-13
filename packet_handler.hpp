@@ -7,18 +7,19 @@
 #include <functional>
 
 struct PacketHeader {
-    PacketType type; 
+    PacketType type;
     uint32_t size_of_data_without_header;
 };
 
 class PacketHandler {
-public:
-    using HandlerFunction = std::function<void(const void*)>;
-    PacketHandler(const std::unordered_map<PacketType, HandlerFunction>& handlers);
-    void handle_packets(const std::vector<PacketWithSize>& packets);
-private:
+  public:
+    using HandlerFunction = std::function<void(const void *)>;
+    PacketHandler(const std::unordered_map<PacketType, HandlerFunction> &handlers);
+    void handle_packets(const std::vector<PacketWithSize> &packets);
+
+  private:
     std::unordered_map<PacketType, HandlerFunction> handlers_;
-    void handle_packet(const void* packet_data, size_t packet_size);
+    void handle_packet(const void *packet_data, size_t packet_size);
 };
 
 #endif // PACKET_HANDLER_HPP
