@@ -1,23 +1,24 @@
 #include "packet_handler.hpp"
 #include <iostream>
 
-PacketHandler::PacketHandler(const std::unordered_map<PacketType, HandlerFunction>& handlers)
-    : handlers_(handlers) {}
+PacketHandler::PacketHandler(const std::unordered_map<PacketType, HandlerFunction> &handlers) : handlers_(handlers) {}
 
-void PacketHandler::handle_packets(const std::vector<PacketWithSize>& packets) {
-    for (const auto& packet : packets) {
+void PacketHandler::handle_packets(const std::vector<PacketWithSize> &packets) {
+    for (const auto &packet : packets) {
         handle_packet(packet.data.data(), packet.size);
     }
 }
 
-void PacketHandler::handle_packet(const void* packet_data, size_t packet_size) {
+void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
     if (packet_size < sizeof(PacketHeader)) {
+        std::cout << "packet didn't even have space for header" << std::endl;
         return;
     }
 
-    const PacketHeader* header = reinterpret_cast<const PacketHeader*>(packet_data);
+    const PacketHeader *header = reinterpret_cast<const PacketHeader *>(packet_data);
 
     if (packet_size < sizeof(PacketHeader) + header->size_of_data_without_header) {
+        std::cout << "had space for header but not enough for data" << std::endl;
         return;
     }
 
