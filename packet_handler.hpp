@@ -6,10 +6,6 @@
 #include <unordered_map>
 #include <functional>
 
-struct PacketHeader {
-    PacketType type;
-    uint32_t size_of_data_without_header;
-};
 
 class PacketHandler {
   public:
