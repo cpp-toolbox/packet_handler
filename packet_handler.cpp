@@ -29,3 +29,13 @@ void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
         std::cout << "Unknown packet type received: " << static_cast<int>(header->type) << "\n";
     }
 }
+
+void PacketHandler::register_handler(const PacketType &packet_type, const HandlerFunction &handler) {
+    handlers_[packet_type] = handler;
+}
+
+void PacketHandler::register_handlers(const std::unordered_map<PacketType, HandlerFunction> &handlers) {
+    for (const auto &[packet_type, handler] : handlers) {
+        register_handler(packet_type, handler);
+    }
+}
