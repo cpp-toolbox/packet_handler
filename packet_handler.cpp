@@ -11,14 +11,14 @@ void PacketHandler::handle_packets(const std::vector<PacketWithSize> &packets) {
 
 void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
     if (packet_size < sizeof(PacketHeader)) {
-        std::cout << "packet didn't even have space for header" << std::endl;
+        logger.error("packet didn't even have space for header");
         return;
     }
 
     const PacketHeader *header = reinterpret_cast<const PacketHeader *>(packet_data);
 
     if (packet_size < sizeof(PacketHeader) + header->size_of_data_without_header) {
-        std::cout << "had space for header but not enough for data" << std::endl;
+        logger.error("had space for header but not enough for data");
         return;
     }
 
@@ -26,7 +26,7 @@ void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
     if (it != handlers_.end()) {
         it->second(packet_data);
     } else {
-        std::cout << "Unknown packet type received: " << static_cast<int>(header->type) << "\n";
+        logger.error("Unknown packet type received: {}", static_cast<int>(header->type));
     }
 }
 
