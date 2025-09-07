@@ -12,7 +12,7 @@ class PacketHandler {
     PacketHandler() {};
     PacketHandler(const std::unordered_map<PacketType, HandlerFunction> &handlers);
 
-    ConsoleLogger logger{"packet_handler"};
+    Logger logger{"packet_handler"};
 
     void handle_packets(const std::vector<PacketWithSize> &packets);
     void register_handler(const PacketType &packet_type, const HandlerFunction &handler);
