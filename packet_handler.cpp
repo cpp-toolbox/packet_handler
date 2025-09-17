@@ -15,6 +15,7 @@ void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
         return;
     }
 
+    // NOTE: assuming that every packet starts with a packet header.
     const PacketHeader *header = reinterpret_cast<const PacketHeader *>(packet_data);
 
     if (packet_size < sizeof(PacketHeader) + header->size_of_data_without_header) {
@@ -22,9 +23,13 @@ void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
         return;
     }
 
+    // wrap raw data into vector<uint8_t>
+    const uint8_t *raw_bytes = reinterpret_cast<const uint8_t *>(packet_data);
+    std::vector<uint8_t> buffer(raw_bytes, raw_bytes + packet_size);
+
     auto it = handlers_.find(header->type);
     if (it != handlers_.end()) {
-        it->second(packet_data);
+        it->second(buffer);
     } else {
         logger.error("Unknown packet type received: {}", static_cast<int>(header->type));
     }
