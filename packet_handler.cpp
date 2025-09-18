@@ -10,15 +10,20 @@ void PacketHandler::handle_packets(const std::vector<PacketWithSize> &packets) {
 }
 
 void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
-    if (packet_size < sizeof(PacketHeader)) {
+    constexpr size_t SerializedPacketHeaderSize = sizeof(uint8_t) + sizeof(uint32_t);
+
+    if (packet_size < SerializedPacketHeaderSize) {
         logger.error("packet didn't even have space for header");
         return;
     }
 
-    // NOTE: assuming that every packet starts with a packet header.
-    const PacketHeader *header = reinterpret_cast<const PacketHeader *>(packet_data);
+    // deserialize safely
+    PacketHeader header;
+    std::memcpy(&header.type, packet_data, sizeof(uint8_t));
+    std::memcpy(&header.size_of_data_without_header, static_cast<const uint8_t *>(packet_data) + sizeof(uint8_t),
+                sizeof(uint32_t));
 
-    if (packet_size < sizeof(PacketHeader) + header->size_of_data_without_header) {
+    if (packet_size < SerializedPacketHeaderSize + header.size_of_data_without_header) {
         logger.error("had space for header but not enough for data");
         return;
     }
@@ -27,11 +32,11 @@ void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
     const uint8_t *raw_bytes = reinterpret_cast<const uint8_t *>(packet_data);
     std::vector<uint8_t> buffer(raw_bytes, raw_bytes + packet_size);
 
-    auto it = handlers_.find(header->type);
+    auto it = handlers_.find(header.type);
     if (it != handlers_.end()) {
         it->second(buffer);
     } else {
-        logger.error("Unknown packet type received: {}", static_cast<int>(header->type));
+        logger.error("Unknown packet type received: {}", static_cast<int>(header.type));
     }
 }
 
