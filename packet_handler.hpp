@@ -14,6 +14,11 @@ class PacketHandler {
 
     Logger logger{"packet_handler"};
 
+    /**
+     * @brief takes in packets, and then calls the associated handler function
+     * @pre assumes that packets have a particular form, namely they start with a packet header which states that type
+     * of packet it is.
+     */
     void handle_packets(const std::vector<PacketWithSize> &packets);
     void register_handler(const PacketType &packet_type, const HandlerFunction &handler);
     void register_handlers(const std::unordered_map<PacketType, HandlerFunction> &handlers);
