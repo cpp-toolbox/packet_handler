@@ -8,6 +8,7 @@
 
 class PacketHandler {
   public:
+    // NOTE: the argument is the raw packet in a buffer
     using HandlerFunction = std::function<void(std::vector<uint8_t>)>;
     PacketHandler() {};
     PacketHandler(const std::unordered_map<PacketType, HandlerFunction> &handlers);
