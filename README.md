@@ -62,3 +62,14 @@ To send over packets you should do something similar to this:
 
         server.reliable_broadcast(buffer.data(), buffer.size());
 ```
+
+## creating packets
+Note that in the above code we assumed that at the start of the packet, there was a packet header this is an assumption that is made by the packet_handler system and you must do this to properly integrate with it, therefore when creating packets, they must have the following form: 
+```cpp
+class XPacket {
+public:
+    PacketHeader header;
+    ...
+}
+```
+
