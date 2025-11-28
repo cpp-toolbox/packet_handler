@@ -10,6 +10,7 @@ enum class PacketType : uint8_t {
     USER_MESSAGES,
 };
 ```
+**NOTE: its very important that you inherit from unint8_t or else the logic that deserialized the header will go wrong**
 when you run `sbpt` it will correctly include it. Additionally both the client and server must have the same packet types available.
 
 Next when constructing a `PacketHandler` you must create a map like this (client):

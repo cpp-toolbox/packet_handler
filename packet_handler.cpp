@@ -85,6 +85,8 @@ void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
         return;
     }
 
+    // NOTE: if ever the values obtained here are incorrect be sure that you PacketType enum inherits from uint8_t
+
     // deserialize safely
     PacketHeader header;
     std::memcpy(&header.type, packet_data, sizeof(uint8_t));
