@@ -10,11 +10,11 @@ void PacketHandler::handle_packets(const std::vector<PacketWithSize> &packets) {
 }
 
 void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
-    LogSection _(global_logger, "handle_packet");
+    LogSection _(*global_logger, "handle_packet");
     constexpr size_t SerializedPacketHeaderSize = sizeof(uint8_t) + sizeof(uint32_t);
 
     if (packet_size < SerializedPacketHeaderSize) {
-        global_logger.error("packet didn't even have space for header");
+        global_logger->error("packet didn't even have space for header");
         return;
     }
 
@@ -27,13 +27,13 @@ void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
                 sizeof(uint32_t));
 
     if (packet_size < SerializedPacketHeaderSize + header.size_of_data_without_header) {
-        global_logger.error("Had space for header but not enough for data.\n"
-                            "  packet_size = {}\n"
-                            "  SerializedPacketHeaderSize = {}\n"
-                            "  header.size_of_data_without_header = {}\n"
-                            "  required_size = {}",
-                            packet_size, SerializedPacketHeaderSize, header.size_of_data_without_header,
-                            SerializedPacketHeaderSize + header.size_of_data_without_header);
+        global_logger->error("Had space for header but not enough for data.\n"
+                             "  packet_size = {}\n"
+                             "  SerializedPacketHeaderSize = {}\n"
+                             "  header.size_of_data_without_header = {}\n"
+                             "  required_size = {}",
+                             packet_size, SerializedPacketHeaderSize, header.size_of_data_without_header,
+                             SerializedPacketHeaderSize + header.size_of_data_without_header);
         return;
     }
 
@@ -45,7 +45,7 @@ void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
     if (it != handlers_.end()) {
         it->second(buffer);
     } else {
-        global_logger.error("Unknown packet type received: {}", static_cast<int>(header.type));
+        global_logger->error("Unknown packet type received: {}", static_cast<int>(header.type));
     }
 }
 
