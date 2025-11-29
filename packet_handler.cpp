@@ -62,7 +62,7 @@ std::optional<PacketHeader> PacketHandler::extract_packet_header_from_raw_packet
     constexpr size_t serialized_packet_header_size = sizeof(uint8_t) + sizeof(uint32_t);
 
     if (packet_size < serialized_packet_header_size) {
-        global_logger.error("packet didn't even have space for header");
+        global_logger->error("packet didn't even have space for header");
         return std::nullopt;
     }
 
@@ -95,12 +95,12 @@ void PacketHandler::handle_packet(const void *packet_data, size_t packet_size) {
 
     if (packet_size < serialized_packet_header_size + header.size_of_data_without_header) {
         global_logger->error("Had space for header but not enough for data.\n"
-                            "  packet_size = {}\n"
-                            "  SerializedPacketHeaderSize = {}\n"
-                            "  header.size_of_data_without_header = {}\n"
-                            "  required_size = {}",
-                            packet_size, serialized_packet_header_size, header.size_of_data_without_header,
-                            serialized_packet_header_size + header.size_of_data_without_header);
+                             "  packet_size = {}\n"
+                             "  SerializedPacketHeaderSize = {}\n"
+                             "  header.size_of_data_without_header = {}\n"
+                             "  required_size = {}",
+                             packet_size, serialized_packet_header_size, header.size_of_data_without_header,
+                             serialized_packet_header_size + header.size_of_data_without_header);
         return;
     }
 
