@@ -2,6 +2,7 @@
 #include <iostream>
 
 void PacketHandler::handle_packets(const std::vector<PacketWithSize> &packets) {
+    GlobalLogSection _("handle_packets", logging_enabled);
 
     bool no_custom_handling_methods = packet_type_to_handling_method.empty();
     if (no_custom_handling_methods) {
@@ -22,7 +23,17 @@ void PacketHandler::handle_packets(const std::vector<PacketWithSize> &packets) {
     for (const auto &p : packets) {
         auto packet_header = extract_packet_header_from_raw_packet(p.data.data(), p.size);
         if (packet_header.has_value()) {
+
             packet_with_type_in_arrival_order.emplace_back(packet_header->type, std::cref(p));
+
+            if (packet_type_to_to_string.find(packet_header->type) != packet_type_to_to_string.end() and
+                logging_enabled) {
+                auto packet_data = p.data.data();
+                auto packet_size = p.size;
+                const uint8_t *raw_bytes = reinterpret_cast<const uint8_t *>(packet_data);
+                std::vector<uint8_t> buffer(raw_bytes, raw_bytes + packet_size);
+                global_logger->info("just received: {}", packet_type_to_to_string.at(packet_header->type)(buffer));
+            }
         }
     }
 
