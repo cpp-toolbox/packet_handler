@@ -47,7 +47,8 @@ class PacketHandler {
     std::unordered_map<PacketType, PacketTypeHandlingMethod> packet_type_to_handling_method = {};
     std::unordered_map<PacketType, std::function<std::string(std::vector<uint8_t>)>> packet_type_to_to_string = {};
 
-    bool logging_enabled = false;
+    // NOTE: if you don't enable this than any logging that occurs during the packet type callbacks will not occur
+    bool logging_enabled = true;
 
     // NOTE: the argument is the raw packet in a buffer
     using HandlerFunction = std::function<void(std::vector<uint8_t>)>;
