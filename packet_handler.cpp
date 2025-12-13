@@ -50,10 +50,12 @@ void PacketHandler::handle_packets(const std::vector<PacketWithSize> &packets) {
 
             // remove everything except the last one
             if (last_packet) {
+                // you can't capture structured bindings in a lambda according to apple-clang13
+                const auto type_copy = type;
                 packet_with_type_in_arrival_order.erase(
                     std::remove_if(
                         packet_with_type_in_arrival_order.begin(), packet_with_type_in_arrival_order.end(),
-                        [&](const auto &entry) { return entry.first == type && &entry.second.get() != last_packet; }),
+                        [&](const auto &entry) { return entry.first == type_copy && &entry.second.get() != last_packet; }),
                     packet_with_type_in_arrival_order.end());
             }
         }
